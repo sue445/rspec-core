@@ -10,11 +10,14 @@ module RSpec::Core
     let(:config) { RSpec::configuration }
     let(:world)  { RSpec::world         }
 
-    before { config.stub :run_hook }
+    before do
+      allow(config).to receive :run_hook
+      allow(config).to receive(:expose_globally?).and_return(false)
+    end
 
     it "configures streams before command line options" do
       stdout = StringIO.new
-      config.stub :load_spec_files
+      allow(config).to receive :load_spec_files
       config.output_stream = nil
 
       # this is necessary to ensure that color works correctly on windows
