@@ -3,7 +3,7 @@ require "stringio"
 require 'tmpdir'
 
 module RSpec::Core
-  describe CommandLine do
+  RSpec.describe CommandLine do
 
     let(:out)    { current_sandboxed_output_stream }
     let(:err)    { StringIO.new         }
