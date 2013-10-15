@@ -16,6 +16,7 @@ module RSpec::Core
     end
 
     it "configures streams before command line options" do
+      allow(RSpec).to receive(:deprecate)  # remove this and should_receive when ordered
       stdout = StringIO.new
       allow(config).to receive :load_spec_files
       config.output_stream = nil
