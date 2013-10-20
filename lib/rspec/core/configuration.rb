@@ -106,6 +106,17 @@ module RSpec
       # Default: true
       add_setting :expose_globally
 
+      def expose_globally=(value)
+        if !@expose_globally && value
+          Core::DSL.expose_globally!
+          Core::SharedExampleGroup::TopLevelDSL.expose_globally!
+        elsif @expose_globally && !value
+          Core::DSL.remove_globally!
+          Core::SharedExampleGroup::TopLevelDSL.remove_globally!
+        end
+        @expose_globally = value
+      end
+
       # @macro add_setting
       # Default: `$stderr`.
       add_setting :deprecation_stream
@@ -219,7 +230,6 @@ module RSpec
 
       def initialize
         @expectation_frameworks = []
-        @expose_globally = true
         @include_or_extend_modules = []
         @mock_framework = nil
         @files_to_run = []
@@ -245,6 +255,8 @@ module RSpec
         @profile_examples = false
         @requires = []
         @libs = []
+        @expose_globally = false
+        self.expose_globally = true
       end
 
       # @private
@@ -876,9 +888,6 @@ module RSpec
 
       # @private
       def load_spec_files
-        if expose_globally?
-          require 'rspec/core/monkey_patch'
-        end
         files_to_run.uniq.each {|f| load File.expand_path(f) }
         @spec_files_loaded = true
       end
